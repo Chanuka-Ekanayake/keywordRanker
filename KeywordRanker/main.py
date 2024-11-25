@@ -9,7 +9,7 @@
 
 #------------------------------------------------------------------------------------------------------------------------------
 
-import keywordRanker
+import keywordR
 
 
 def inputKeyword():
@@ -44,7 +44,7 @@ def main():
     choice = input("\nEnter your choice: ").strip()
 
     if choice == "1":
-        keywordRanker.keywordRanker(inputKeyword(), inputRegion())
+        keywordR.keywordRanker(inputKeyword(), inputRegion())
 
 
 if __name__ == "__main__":
