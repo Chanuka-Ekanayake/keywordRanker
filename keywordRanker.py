@@ -3,6 +3,8 @@ class keywordRanker:
         self.keyowrds = keywords
         self.region = region
 
+        
+
     
     
 
