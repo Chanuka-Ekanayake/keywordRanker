@@ -1,32 +1,50 @@
+import pandas as pd
 from pytrends.request import TrendReq
 
 # Initialize Pytrends
 pytrends = TrendReq(hl='en-US', tz=360)
 
 # Input keyword
-keyword = "technology"
+keyword = input("Enter a keyword: ")
 
-# Build the payload with the keyword
-pytrends.build_payload(
-    kw_list=[keyword],  # Keyword list
-    cat=0,              # Default category
-    timeframe='today 12-m',  # Last 12 months
-    geo='LK',           # Sri Lanka
-    gprop=''            # Default (web search)
-)
+# List of cities (e.g., from a specific region)
+cities = ["Colombo", "Dehiwala-Mount Lavinia", "Maharagama", "Kandy", "Galle"]
 
-# Get interest by region
-interest_by_region = pytrends.interest_by_region(resolution='REGION')
+# Create an empty dictionary to store city scores
+city_scores = {}
 
-# Check if data is available
-if not interest_by_region.empty:
-    # Sort regions by popularity in descending order
-    # top_regions = interest_by_region.sort_values(by=keyword, ascending=False)
-    # print(f"\nTop regions for the keyword '{keyword}':")
-    print(interest_by_region) 
-    
-    # regions = top_regions.index.tolist()
-    # print(regions)
-else:
-    print(f"\nNo data available for the keyword '{keyword}'.")
+# Loop through each city and fetch the trend data
+for city in cities:
+    try:
+        # Build payload with the city and keyword
+        pytrends.build_payload(
+            kw_list=[keyword],
+            cat=0,
+            timeframe='today 12-m',
+            geo=f'LK',  # Country code for Sri Lanka
+            gprop=''    # Default (web search)
+        )
+        
+        # Get interest by region (resolution='CITY')
+        interest_by_region = pytrends.interest_by_region(resolution='CITY')
 
+        print(interest_by_region.head())  # Print the specific regions with the highest interest on the keyword
+
+        # Check if city exists in the data
+        # if city in interest_by_region.index:
+        #     city_scores[city] = interest_by_region.loc[city, keyword]
+        # else:
+        #     city_scores[city] = 0  # Assign 0 if city data is not available
+    except Exception as e:
+        print(f"Error processing city {city}: {e}")
+        city_scores[city] = 0
+
+# # Convert dictionary to DataFrame
+# df = pd.DataFrame(list(city_scores.items()), columns=["City", "Popularity Score"])
+
+# # Sort DataFrame by "Popularity Score" in descending order
+# df = df.sort_values(by="Popularity Score", ascending=False).reset_index(drop=True)
+
+# # Display the DataFrame
+# print(f"\nCities ranked by popularity for keyword '{keyword}':\n")
+# print(df)
